@@ -1,4 +1,4 @@
-# Spring Session Caffeine
+# Spring Session Caffeine [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/gotson/spring-session-caffeine/CI/master)](https://github.com/gotson/spring-session-caffeine/actions/workflows/ci.yml)
 
 Provides `SessionRepository` implementation backed by a [Caffeine](https://github.com/ben-manes/caffeine) cache.
 
