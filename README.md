@@ -17,6 +17,8 @@ Spring Session Caffeine implements all those capabilities.
 
 ## Installation
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.gotson/spring-session-caffeine)](https://search.maven.org/artifact/com.github.gotson/spring-session-caffeine)
+
 ### Gradle
 
 ```groovy
