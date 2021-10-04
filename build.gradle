@@ -1,0 +1,104 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+}
+
+group 'com.github.gotson'
+description 'Spring Session for Caffeine'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:2.5.5"))
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-context-support")
+    implementation("org.springframework.session:spring-session-core")
+
+    implementation("com.github.ben-manes.caffeine:caffeine")
+
+    testImplementation("org.springframework:spring-test")
+    testImplementation("org.springframework:spring-web")
+    testImplementation("org.springframework.security:spring-security-core")
+    testImplementation("javax.servlet:javax.servlet-api")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.mockito:mockito-core")
+    testImplementation("org.assertj:assertj-core")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    repositories {
+        mavenLocal()
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Spring Session Caffeine'
+                description = "${description}"
+                url = 'https://github.com/gotson/spring-session-caffeine'
+                licenses {
+                    license {
+                        name = 'Apache License 2.0'
+                        url = 'https://github.com/gotson/spring-session-caffeine/LICENSE.md'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'gotson'
+                        name = 'Gauthier Roebroeck'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/gotson/spring-session-caffeine.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    def signingKey = findProperty('signingKey')
+    def signingPassword = findProperty('signingPassword')
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Sign)*.enabled = false
