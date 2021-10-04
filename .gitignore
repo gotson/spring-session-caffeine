@@ -1,0 +1,16 @@
+.gradle
+.idea
+build
+*.iml
+bin
+.classpath
+.settings
+.project
+target
+out
+.springBeans
+*.rdb
+.checkstyle
+!etc/eclipse/.checkstyle
+!**/src/**/build
+.DS_Store
