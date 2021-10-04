@@ -26,6 +26,7 @@ dependencies {
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-context-support")
     implementation("org.springframework.session:spring-session-core")
+    implementation("javax.annotation:javax.annotation-api")
 
     implementation("com.github.ben-manes.caffeine:caffeine")
 
