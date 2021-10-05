@@ -1,13 +1,20 @@
-name: CI
+name: test
 
-on: [ pull_request, push ]
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  push:
+    paths-ignore:
+      - '**.md'
 
 jobs:
   test:
-    name: test jdk${{ matrix.java }}
+    name: Test ${{ matrix.os }} JDK${{ matrix.java }}
     strategy:
       matrix:
-        java: [ 8 ]
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        java: [ 8, 11, 17 ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
