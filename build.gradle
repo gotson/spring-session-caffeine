@@ -101,3 +101,5 @@ nexusPublishing {
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
+
+//tasks.withType(Sign)*.enabled = false
