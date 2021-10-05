@@ -67,7 +67,7 @@ class CaffeineIndexedSessionRepositoryTests {
         CaffeineSession session = this.repository.createSession();
 
         assertThat(session.getMaxInactiveInterval()).isEqualTo(new MapSession().getMaxInactiveInterval());
-        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
+
         verifyNoMoreInteractions(this.sessions);
     }
 
@@ -79,13 +79,14 @@ class CaffeineIndexedSessionRepositoryTests {
         CaffeineSession session = this.repository.createSession();
 
         assertThat(session.getMaxInactiveInterval()).isEqualTo(Duration.ofSeconds(interval));
-        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
+
         verifyNoMoreInteractions(this.sessions);
     }
 
     @Test
-    void saveNewFlush() {
+    void saveNew() {
         CaffeineSession session = this.repository.createSession();
+        this.repository.save(session);
         verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
 
         this.repository.save(session);
@@ -93,46 +94,46 @@ class CaffeineIndexedSessionRepositoryTests {
     }
 
     @Test
-    void saveUpdatedAttributeFlush() {
+    void saveUpdatedAttribute() {
         CaffeineSession session = this.repository.createSession();
 
         session.setAttribute("testName", "testValue");
-        verify(this.sessions, times(2)).put(eq(session.getId()), eq(session.getDelegate()));
-
         this.repository.save(session);
+
+        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
         verifyNoMoreInteractions(this.sessions);
     }
 
     @Test
-    void removeAttributeFlush() {
+    void removeAttribute() {
         CaffeineSession session = this.repository.createSession();
 
         session.removeAttribute("testName");
-        verify(this.sessions, times(2)).put(eq(session.getId()), eq(session.getDelegate()));
-
         this.repository.save(session);
+
+        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
         verifyNoMoreInteractions(this.sessions);
     }
 
     @Test
-    void saveUpdatedLastAccessedTimeFlush() {
+    void saveUpdatedLastAccessedTime() {
         CaffeineSession session = this.repository.createSession();
 
         session.setLastAccessedTime(Instant.now());
-        verify(this.sessions, times(2)).put(eq(session.getId()), eq(session.getDelegate()));
-
         this.repository.save(session);
+
+        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
         verifyNoMoreInteractions(this.sessions);
     }
 
     @Test
-    void saveUpdatedMaxInactiveIntervalInSecondsFlush() {
+    void saveUpdatedMaxInactiveIntervalInSeconds() {
         CaffeineSession session = this.repository.createSession();
 
         session.setMaxInactiveInterval(Duration.ofSeconds(1));
-        verify(this.sessions, times(2)).put(eq(session.getId()), eq(session.getDelegate()));
-
         this.repository.save(session);
+
+        verify(this.sessions, times(1)).put(eq(session.getId()), eq(session.getDelegate()));
         verifyNoMoreInteractions(this.sessions);
     }
 
@@ -223,9 +224,6 @@ class CaffeineIndexedSessionRepositoryTests {
 
         CaffeineSession saved2 = this.repository.createSession();
         saved2.setAttribute(SPRING_SECURITY_CONTEXT, securityContext);
-
-        verify(this.sessions, times(2)).put(eq(saved1.getId()), eq(saved1.getDelegate()));
-        verify(this.sessions, times(2)).put(eq(saved2.getId()), eq(saved2.getDelegate()));
 
         saved.put(saved1.getId(), saved1.getDelegate());
         saved.put(saved2.getId(), saved2.getDelegate());

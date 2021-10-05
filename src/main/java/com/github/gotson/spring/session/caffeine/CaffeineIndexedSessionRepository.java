@@ -193,9 +193,7 @@ public class CaffeineIndexedSessionRepository
         if (this.defaultMaxInactiveInterval != null) {
             cached.setMaxInactiveInterval(Duration.ofSeconds(this.defaultMaxInactiveInterval));
         }
-        CaffeineSession session = new CaffeineSession(cached, true);
-        session.flushImmediate();
-        return session;
+        return new CaffeineSession(cached, true);
     }
 
     @Override
@@ -208,7 +206,9 @@ public class CaffeineIndexedSessionRepository
             session.originalId = session.getId();
             this.sessions.put(session.getId(), new MapSession(session.getDelegate()));
         } else if (session.hasChanges()) {
-            this.sessions.put(session.getId(), new MapSession(session.getDelegate()));
+            if (this.sessions.getIfPresent(session.getId()) != null) {
+                this.sessions.put(session.getId(), new MapSession(session.getDelegate()));
+            }
         }
         session.clearChangeFlags();
     }
@@ -237,7 +237,7 @@ public class CaffeineIndexedSessionRepository
      */
     final class CaffeineSession implements Session {
 
-        private final MapSession delegate;
+        private MapSession delegate;
 
         private boolean isNew;
 
@@ -264,6 +264,7 @@ public class CaffeineIndexedSessionRepository
 
         @Override
         public String changeSessionId() {
+            this.delegate = new MapSession(this.delegate);
             String newSessionId = this.delegate.changeSessionId();
             this.sessionIdChanged = true;
             return newSessionId;
@@ -289,14 +290,12 @@ public class CaffeineIndexedSessionRepository
                 String principal = (attributeValue != null) ? indexes.get(PRINCIPAL_NAME_INDEX_NAME) : null;
                 this.delegate.setAttribute(PRINCIPAL_NAME_ATTRIBUTE, principal);
             }
-            flushImmediate();
         }
 
         @Override
         public void removeAttribute(String attributeName) {
             delegate.removeAttribute(attributeName);
             this.attributesChanged = true;
-            flushImmediate();
         }
 
         @Override
@@ -308,7 +307,6 @@ public class CaffeineIndexedSessionRepository
         public void setLastAccessedTime(Instant lastAccessedTime) {
             this.delegate.setLastAccessedTime(lastAccessedTime);
             this.lastAccessedTimeChanged = true;
-            flushImmediate();
         }
 
         @Override
@@ -321,7 +319,6 @@ public class CaffeineIndexedSessionRepository
             Assert.notNull(interval, "interval must not be null");
             this.delegate.setMaxInactiveInterval(interval);
             this.maxInactiveIntervalChanged = true;
-            flushImmediate();
         }
 
         @Override
@@ -348,10 +345,6 @@ public class CaffeineIndexedSessionRepository
             this.sessionIdChanged = false;
             this.maxInactiveIntervalChanged = false;
             this.attributesChanged = false;
-        }
-
-        private void flushImmediate() {
-            CaffeineIndexedSessionRepository.this.save(this);
         }
     }
 }
