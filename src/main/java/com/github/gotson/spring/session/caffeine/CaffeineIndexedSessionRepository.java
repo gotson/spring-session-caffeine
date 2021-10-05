@@ -178,7 +178,7 @@ public class CaffeineIndexedSessionRepository
             return Collections.emptyMap();
         }
         Collection<MapSession> sessions = this.sessions.asMap().values().stream()
-            .filter(mapSession -> mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE) == indexValue)
+            .filter(mapSession -> mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE).equals(indexValue))
             .collect(Collectors.toList());
         Map<String, CaffeineSession> sessionMap = new HashMap<>(sessions.size());
         for (MapSession session : sessions) {
