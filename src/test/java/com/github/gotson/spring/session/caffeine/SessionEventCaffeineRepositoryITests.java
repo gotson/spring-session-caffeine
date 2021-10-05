@@ -49,7 +49,12 @@ public class SessionEventCaffeineRepositoryITests<S extends Session> {
         SessionRepositoryCustomizer<CaffeineIndexedSessionRepository> customize() {
             return (sessionRepository -> {
                 sessionRepository.setExecutor(Executors.newFixedThreadPool(10));
-                sessionRepository.setScheduler(Scheduler.forScheduledExecutorService(Executors.newScheduledThreadPool(10)));
+                String version = System.getProperty("java.version");
+                if (version.startsWith("1.8")) {
+                    sessionRepository.setScheduler(Scheduler.forScheduledExecutorService(Executors.newScheduledThreadPool(10)));
+                } else {
+                    sessionRepository.setScheduler(Scheduler.systemScheduler());
+                }
             }
             );
         }
