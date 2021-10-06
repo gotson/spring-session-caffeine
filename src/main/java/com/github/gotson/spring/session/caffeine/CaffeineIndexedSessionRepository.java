@@ -174,11 +174,11 @@ public class CaffeineIndexedSessionRepository
 
     @Override
     public Map<String, CaffeineSession> findByIndexNameAndIndexValue(String indexName, String indexValue) {
-        if (!PRINCIPAL_NAME_INDEX_NAME.equals(indexName)) {
+        if (!PRINCIPAL_NAME_INDEX_NAME.equals(indexName) || indexValue == null) {
             return Collections.emptyMap();
         }
         Collection<MapSession> sessions = this.sessions.asMap().values().stream()
-            .filter(mapSession -> mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE).equals(indexValue))
+            .filter(mapSession -> indexValue.equals(mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE)))
             .collect(Collectors.toList());
         Map<String, CaffeineSession> sessionMap = new HashMap<>(sessions.size());
         for (MapSession session : sessions) {

@@ -201,13 +201,32 @@ class CaffeineIndexedSessionRepositoryTests {
     void findByIndexNameAndIndexValuePrincipalIndexNameNotFound() {
         String principal = "username";
 
-        when(this.sessions.asMap()).thenAnswer(x -> new ConcurrentHashMap<>());
+        when(this.sessions.asMap()).thenAnswer(x -> {
+            ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
+            map.put("session", new MapSession());
+            return map;
+        });
 
         Map<String, CaffeineSession> sessions = this.repository
             .findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, principal);
 
         assertThat(sessions).isEmpty();
         verify(this.sessions, times(1)).asMap();
+        verifyNoMoreInteractions(this.sessions);
+    }
+
+    @Test
+    void findByIndexNameAndIndexValueNull() {
+        when(this.sessions.asMap()).thenAnswer(x -> {
+            ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
+            map.put("session", new MapSession());
+            return map;
+        });
+
+        Map<String, CaffeineSession> sessions = this.repository
+            .findByIndexNameAndIndexValue(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME, null);
+
+        assertThat(sessions).isEmpty();
         verifyNoMoreInteractions(this.sessions);
     }
 
