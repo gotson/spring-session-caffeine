@@ -133,7 +133,7 @@ public class CaffeineIndexedSessionRepository
 
     /**
      * Sets the {@link Executor} that is used to perform
-     * removal opetaions. The default is Caffeine's default.
+     * removal operations. The default is Caffeine's default.
      *
      * @param executor the {@link Executor} that is used
      *                 to perform removal operations on the cache. Cannot be null.
@@ -145,7 +145,7 @@ public class CaffeineIndexedSessionRepository
 
     /**
      * Sets the {@link Scheduler} that is used to perform
-     * removal opetaions. The default is Caffeine's default.
+     * removal operations. The default is Caffeine's default.
      *
      * @param scheduler the {@link Scheduler} that is used
      *                  to perform removal operations on the cache. Cannot be null.
