@@ -1,19 +1,33 @@
 # Spring Session Caffeine [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/gotson/spring-session-caffeine/test/master)](https://github.com/gotson/spring-session-caffeine/actions/workflows/test.yml)
 
-Provides `SessionRepository` implementation backed by a [Caffeine](https://github.com/ben-manes/caffeine) cache.
+Provides a `SessionRepository` implementation backed by a [Caffeine](https://github.com/ben-manes/caffeine) cache.
 
-## Motivation
+## Features
 
-I needed Spring Session in order to use custom `HttpSessionIdResolver`, in order to read/write session IDs to headers.
-My application is fairly small and doesn't need clustered sessions like Redis or Hazelcast.
-
-The Spring Session `MapSessionRepository` lacks some capabilities:
-
-- firing Session events
+- respond to entries being added, evicted, and removed from the registry causes these events to trigger publishing
+  of `SessionCreatedEvent`, `SessionExpiredEvent`, and `SessionDeletedEvent` events (respectively) through
+  the `ApplicationEventPublisher`
 - automatically purge expired sessions
-- does not implement `FindByIndexNameSessionRepository`, which is required for integration with Spring Security
+- configure underlying cache by setting a specific `Scheduler` or `Executor`
+- implements `FindByIndexNameSessionRepository`, which can be used with `SpringSessionBackedSessionRegistry` if you need
+  to support Spring Security concurrent session control
 
-Spring Session Caffeine implements all those capabilities.
+## When to use it?
+
+_Spring Session Caffeine_ is a good candidate when you need more capabilities than the default `MapSessionRepository`,
+like events firing or automatic purging of expired sessions, or when you need a `FindByIndexNameSessionRepository`.
+
+If you need those extra capabilities, you may consider _Spring Session Caffeine_ instead of other Spring Session Modules
+in the following cases:
+
+- Single instance. _Spring Session Caffeine_ will be more lightweight than _Spring Session Redis_ or _Spring Session
+  Hazelcast_, as those solutions depend on external systems, while Caffeine is a pure Java implementation. Caffeine is
+  not a distributed cache, so it will only work with a single instance.
+- No JDBC database. While _Spring Session JDBC_ can be a good candidate for a single instance service, you may not be
+  using a database already.
+- SQLite. When using _Spring Session JDBC_ with SQLite, the high number of writes can impact the performances of your
+  application when sharing the SQLite database between sessions and the rest of your application. In that case _Spring
+  Session Caffeine_ can be a good alternative.
 
 ## Installation
 
