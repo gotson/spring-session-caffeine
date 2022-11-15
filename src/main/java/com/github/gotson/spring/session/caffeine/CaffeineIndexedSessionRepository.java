@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Scheduler;
+import jakarta.annotation.PostConstruct;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,7 +21,6 @@ import org.springframework.session.events.SessionDeletedEvent;
 import org.springframework.session.events.SessionExpiredEvent;
 import org.springframework.util.Assert;
 
-import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 /**
  * A {@link org.springframework.session.SessionRepository} implementation that stores
@@ -75,7 +74,7 @@ public class CaffeineIndexedSessionRepository
     public void init() {
         Caffeine<String, MapSession> builder = Caffeine.newBuilder()
             .removalListener(this::removalListener)
-            .expireAfter(new Expiry<String, MapSession>() {
+            .expireAfter(new Expiry<>() {
                 @Override
                 public long expireAfterCreate(@NonNull String key, @NonNull MapSession value, long currentTime) {
                     return value.getMaxInactiveInterval().toNanos();
@@ -178,8 +177,7 @@ public class CaffeineIndexedSessionRepository
             return Collections.emptyMap();
         }
         Collection<MapSession> sessions = this.sessions.asMap().values().stream()
-            .filter(mapSession -> indexValue.equals(mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE)))
-            .collect(Collectors.toList());
+            .filter(mapSession -> indexValue.equals(mapSession.getAttribute(PRINCIPAL_NAME_ATTRIBUTE))).toList();
         Map<String, CaffeineSession> sessionMap = new HashMap<>(sessions.size());
         for (MapSession session : sessions) {
             sessionMap.put(session.getId(), new CaffeineSession(session, false));
