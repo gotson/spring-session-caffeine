@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'org.jreleaser' version '1.3.1'
 }
 
 group 'com.github.gotson'
@@ -106,4 +107,48 @@ tasks.withType(JavaCompile) {
 tasks.wrapper {
     gradleVersion = '7.5.1'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+jreleaser {
+    project {
+        description = "${description}"
+        copyright = 'Gauthier Roebroeck'
+    }
+    release {
+        github {
+            discussionCategoryName = 'Announcements'
+
+            changelog {
+                formatted = 'ALWAYS'
+                preset = 'conventional-commits'
+                skipMergeCommits = true
+                links = true
+                format = '- {{commitTitle}} ({{commitShortHash}})'
+                contributors {
+                    enabled = false
+                }
+                hide {
+                    uncategorized = true
+                }
+                excludeLabels = ['chore']
+                category {
+                    title = '🏎 Perf'
+                    key = 'perf'
+                    labels = ['perf']
+                    order = 25
+                }
+            }
+
+            issues {
+                enabled = true
+                comment = '🎉 This issue has been resolved in `{{tagName}}` ([Release Notes]({{releaseNotesUrl}}))'
+                applyMilestone = 'ALWAYS'
+                label {
+                    name = 'released'
+                    description = 'Issue has been released'
+                    color = '#ededed'
+                }
+            }
+        }
+    }
 }
