@@ -23,3 +23,9 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.MAVENCENTRAL_PASSWORD }}
         with:
           arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
+      - name: JReleaser full release
+        uses: gradle/gradle-build-action@v2
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: jreleaserFullRelease
