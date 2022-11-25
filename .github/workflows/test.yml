@@ -28,3 +28,9 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
+      - name: Upload Unit Test Reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports-${{ matrix.os }}-JDK${{ matrix.java }}
+          path: '**/build/reports/tests/'
