@@ -123,7 +123,7 @@ jreleaser {
                 preset = 'conventional-commits'
                 skipMergeCommits = true
                 links = true
-                format = '- {{commitTitle}} ({{commitShortHash}})'
+                format = '- {{#commitIsConventional}}{{#conventionalCommitIsBreakingChange}}🚨 {{/conventionalCommitIsBreakingChange}}{{#conventionalCommitScope}}**{{conventionalCommitScope}}**: {{/conventionalCommitScope}}{{conventionalCommitDescription}}{{#conventionalCommitBreakingChangeContent}}: *{{conventionalCommitBreakingChangeContent}}*{{/conventionalCommitBreakingChangeContent}} ({{commitShortHash}}){{/commitIsConventional}}{{^commitIsConventional}}{{commitTitle}} ({{commitShortHash}}){{/commitIsConventional}}{{#commitHasIssues}}, closes{{#commitIssues}} {{issue}}{{/commitIssues}}{{/commitHasIssues}}'
                 contributors {
                     enabled = false
                 }
@@ -136,6 +136,11 @@ jreleaser {
                     key = 'perf'
                     labels = ['perf']
                     order = 25
+                }
+                labeler {
+                    label = 'perf'
+                    title = 'regex:^(?:perf(?:\\(.*\\))?!?):\\s.*'
+                    order = 120
                 }
             }
 
