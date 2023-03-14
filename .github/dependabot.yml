@@ -1,8 +1,6 @@
 version: 2
 updates:
-
-  # Maintain dependencies for maven (pom.xml in root directory)
-  - package-ecosystem: "maven"
+  - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "weekly"
