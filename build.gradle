@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.1.1"))
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:3.1.2"))
 
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-context-support")
