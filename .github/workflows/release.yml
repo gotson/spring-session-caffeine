@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew publishToSonatype closeAndReleaseStagingRepositories
 
       - name: JReleaser full release
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
