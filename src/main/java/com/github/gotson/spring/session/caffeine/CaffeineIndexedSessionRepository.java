@@ -6,8 +6,7 @@ import com.github.benmanes.caffeine.cache.Expiry;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.Scheduler;
 import jakarta.annotation.PostConstruct;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.session.DelegatingIndexResolver;
 import org.springframework.session.FindByIndexNameSessionRepository;
@@ -81,12 +80,12 @@ public class CaffeineIndexedSessionRepository
                 }
 
                 @Override
-                public long expireAfterUpdate(@NonNull String key, @NonNull MapSession value, long currentTime, @NonNegative long currentDuration) {
+                public long expireAfterUpdate(@NonNull String key, @NonNull MapSession value, long currentTime, long currentDuration) {
                     return value.getMaxInactiveInterval().toNanos();
                 }
 
                 @Override
-                public long expireAfterRead(@NonNull String key, @NonNull MapSession value, long currentTime, @NonNegative long currentDuration) {
+                public long expireAfterRead(@NonNull String key, @NonNull MapSession value, long currentTime, long currentDuration) {
                     return currentDuration;
                 }
             });
