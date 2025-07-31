@@ -36,8 +36,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-core")
     testImplementation("jakarta.servlet:jakarta.servlet-api")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(platform('org.junit:junit-bom:5.13.4'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
     testImplementation("org.mockito:mockito-core")
     testImplementation("org.assertj:assertj-core")
 }
