@@ -4,6 +4,7 @@ plugins {
     id 'signing'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     id 'org.jreleaser' version '1.19.0'
+    id 'org.gradle.test-retry' version "1.6.2"
 }
 
 group 'com.github.gotson'
@@ -43,8 +44,14 @@ dependencies {
     testImplementation("org.assertj:assertj-core")
 }
 
+boolean isCiServer = System.getenv().containsKey("CI")
 test {
     useJUnitPlatform()
+    retry {
+        if (isCiServer) {
+            maxRetries = 3
+        }
+    }
 }
 
 publishing {
