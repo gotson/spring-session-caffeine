@@ -35,7 +35,7 @@ jobs:
 
       - name: Upload Unit Test Reports
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-reports-${{ matrix.os }}-JDK${{ matrix.java }}
           path: '**/build/reports/tests/'
